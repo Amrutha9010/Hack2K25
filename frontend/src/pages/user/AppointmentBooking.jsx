@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Calendar, Clock, User, Mail, Phone, Stethoscope, FileText, Activity } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase } from "../../lib/supabase";
 import './AppointmentBooking.css';
 
 const departments = [

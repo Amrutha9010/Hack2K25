@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, User, Stethoscope, Search, Filter, ArrowLeft, CheckCircle, XCircle, AlertCircle, Clock as ClockPending, Video, Trash2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase } from "../../lib/supabase";
 import './AppointmentList.css';
 
 function AppointmentList({ onBackToBooking }) {

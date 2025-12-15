@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import AppointmentBooking from './components/AppointmentBooking';
-import BookingConfirmation from './components/BookingConfirmation';
-import AppointmentList from './components/AppointmentList';
+import AppointmentBooking from './pages/user/AppointmentBooking';
+import BookingConfirmation from './pages/user/BookingConfirmation';
+import AppointmentList from './pages/user/AppointmentList';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('booking');
