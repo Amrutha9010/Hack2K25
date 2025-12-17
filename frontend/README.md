@@ -1,4 +1,5 @@
 MediCare
 npm i    
-npm install @supabase/supabase-js
+npm install @fortawesome/fontawesome-free
 npm install framer-motion lucide-react
+npm i mongoose
