@@ -1,188 +1,238 @@
+/* ================== WRAPPER ================== */
 .login-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 3rem 2rem;
-  background: linear-gradient(to bottom, #e0f8f6 0%, #f0fdfc 30%, #ffffff 50%, #f0fdfc 70%, #e0f8f6 100%);
-  position: relative;
+
+  /* Soft healthcare gradient like hero section */
+  background: radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(20, 184, 166, 0.08),
+      transparent 40%
+    ),
+    #f8fafc;
+
   overflow: hidden;
 }
 
+/* ================== CARD ================== */
 .login-card {
   display: flex;
-  width: 820px;
-  border-radius: 16px;
+  width: 840px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border-top-right-radius: 100px;
-  border-bottom-right-radius: 100px;
-  position: relative;
-  z-index: 1;
+  background: white;
+
+  box-shadow:
+    0 20px 40px rgba(15, 23, 42, 0.08),
+    0 8px 16px rgba(15, 23, 42, 0.05);
 }
 
+/* ================== LEFT: LOGIN ================== */
 .login-box {
   width: 55%;
-  padding: 40px;
+  padding: 48px;
   background: white;
-  animation: fadeInUp 1s ease;
+  animation: fadeInUp 0.8s ease;
 }
 
+/* ================== RIGHT: WELCOME ================== */
 .welcome-box {
   width: 45%;
-  padding: 40px;
-  background: #1bbc9b;
+  padding: 48px;
+
+  /* Smooth blend – NOT solid blue */
+  background: linear-gradient(
+    135deg,
+    #2563eb 0%,
+    #3b82f6 45%,
+    #14b8a6 100%
+  );
+
   color: white;
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-top-right-radius: 100px;
-  border-bottom-right-radius: 100px;
-  animation: fadeInUp 1s ease;
+  text-align: center;
+
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+
+  animation: fadeInUp 0.8s ease;
 }
 
 .welcome-box h3 {
-  font-size: 22px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 .welcome-box p {
   font-size: 14px;
-  margin-bottom: 20px;
+  line-height: 1.6;
+  opacity: 0.95;
+  margin-bottom: 28px;
 }
 
+/* ================== TITLE ================== */
 .title {
   text-align: center;
-  color: #1bbc9b;
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: 700;
+
+  /* Gradient text like hero */
+  background: linear-gradient(
+    to right,
+    #2563eb,
+    #14b8a6
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  margin-bottom: 26px;
 }
 
+/* ================== ROLE SWITCH ================== */
 .role-selection {
   display: flex;
-  margin-bottom: 20px;
-  background: #f0f0f0;
+  margin-bottom: 22px;
+  background: #f1f5f9;
   border-radius: 9999px;
-  overflow: hidden;
+  padding: 4px;
 }
 
 .role-selection button {
   flex: 1;
-  padding: 10px;
+  padding: 10px 0;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-weight: bold;
-  color: #333;
+  font-weight: 600;
+  color: #334155;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
 }
 
 .role-selection button.active {
-  background: #1bbc9b;
+  background: linear-gradient(
+    to right,
+    #14b8a6,
+    #5eead4
+  );
+  color: #042f2e;
+}
+
+.role-selection button.active {
+  background: #3a1bbc;
   color: white;
 }
 
+/* ================== INPUTS ================== */
 input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  transition: all 0.5s ease;
+  padding: 13px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+  background: #f8fafc;
+  transition: all 0.3s ease;
 }
 
 input:focus {
-  border-color: #1bbc9b;
-  box-shadow: 0 0 0 3px rgba(27, 188, 155, 0.2);
+  background: white;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
 }
 
+/* ================== OPTIONS ================== */
 .options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   font-size: 13px;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
+  color: #475569;
 }
 
 .options label {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin: 0;
-  cursor: pointer;
+  gap: 6px;
 }
 
 .options input[type="checkbox"] {
-  margin: 0;
+  accent-color: #14b8a6;
 }
 
 .options a {
-  color: #1bbc9b;
-  text-decoration: none;
+  color: #2563eb;
+  font-weight: 500;
   cursor: pointer;
   transition: color 0.3s ease;
 }
 
 .options a:hover {
-  color: #0ca488;
+  color: #1e40af;
+  text-decoration: underline;
 }
 
+/* ================== PRIMARY BUTTON ================== */
 .btn {
   width: 100%;
-  padding: 12px;
-  background: #1bbc9b;
-  color: white;
+  padding: 14px;
+  border-radius: 9999px;
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
   cursor: pointer;
-  margin-top: 12px;
-  transition: all 0.4s ease;
+  font-weight: 700;
+  font-size: 15px;
+
+  background: blue;
+  color: white;
+
+  transition: all 0.3s ease;
 }
 
 .btn:hover {
-  background: #0ca488;
   transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 
+/* ================== TRANSPARENT BUTTON ================== */
 .btn.transparent {
   background: transparent;
-  border: 2px solid white;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  color: white;
 }
 
 .btn.transparent:hover {
   background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
 }
 
+/* ================== MODAL ================== */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-
+/* ================== ANIMATION ================== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(25px);
   }
   to {
     opacity: 1;

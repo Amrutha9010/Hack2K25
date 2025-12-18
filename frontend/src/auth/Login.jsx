@@ -10,12 +10,12 @@ function Login({ onLoginSuccess, onGoToRegister, onGoToForgot }) {
   const [showForgotModal, setShowForgotModal] = useState(false);
 
   const welcomeTitle =
-    role === "Student" ? "Welcome, Friend!" : "Welcome, Warden!";
+    role === "Student" ? "Welcome, Friend!" : "Welcome, Sir/Mam!";
 
   const welcomeText =
     role === "Student"
-      ? "Continue your journey with Hostel Buddy."
-      : "Manage your hostel with ease and control.";
+      ? "Continue your journey with Smart Health."
+      : "Manage your healthcare with ease and control.";
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -1,92 +1,27 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+import dotenv from 'dotenv';
+import app from './src/app.js';
+import connectDB from './src/config/db.js';
 
-const connectDB = require("./config/db");
-const Appointment = require("./models/Appointment");
+dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-
+// Connect DB
 connectDB();
 
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 5000;
 
-// Health check
-app.get("/health", (req, res) => {
-  res.json({ status: "Server is running" });
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-// Create appointment (used by frontend booking form)
-app.post("/api/appointments", async (req, res) => {
-  try {
-    const appointment = new Appointment(req.body);
-    const savedAppointment = await appointment.save();
-    res.status(201).json(savedAppointment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// Safety handlers
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+  server.close(() => process.exit(1));
 });
 
-// Get all appointments
-app.get("/api/appointments", async (req, res) => {
-  try {
-    const appointments = await Appointment.find().sort({ appointment_date: 1 });
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Get appointment by ID
-app.get("/api/appointments/:id", async (req, res) => {
-  try {
-    const appointment = await Appointment.findById(req.params.id);
-    res.json(appointment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Update appointment status
-app.put("/api/appointments/:id/status", async (req, res) => {
-  try {
-    const updated = await Appointment.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
-      { new: true }
-    );
-    res.json(updated);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Update meet link
-app.put("/api/appointments/:id/meet-link", async (req, res) => {
-  try {
-    const updated = await Appointment.findByIdAndUpdate(
-      req.params.id,
-      { meet_link: req.body.meet_link },
-      { new: true }
-    );
-    res.json(updated);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Delete appointment
-app.delete("/api/appointments/:id", async (req, res) => {
-  try {
-    await Appointment.findByIdAndDelete(req.params.id);
-    res.json({ message: "Appointment deleted" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+  });
 });
