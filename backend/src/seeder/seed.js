@@ -1,158 +1,142 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-
 import Hospital from "../models/Hospital.model.js";
 import Doctor from "../models/Doctor.model.js";
-import Slot from "../models/Slot.model.js";
 
-dotenv.config();
-console.log("SEEDING INTO 👉", process.env.MONGODB_URI);
-
-/* ===============================
-   CONNECT DB
-================================ */
-const connectDB = async () => {
-  console.log("SEEDER DB URI 👉", process.env.MONGODB_URI); // 🔥 ADD THIS
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log("✅ MongoDB connected for seeding");
-};
-
-
-/* ===============================
-   HOSPITALS (BHIMAVARAM)
-================================ */
-const seedHospitals = async () => {
-  await Hospital.deleteMany();
-
-  const hospitals = await Hospital.insertMany([
-    { name: "Sri Aditya Multi Speciality Hospital", city: "bhimavaram" },
-    { name: "Anjali Hospital", city: "bhimavaram" },
-    { name: "Vijaya Super Speciality Hospital", city: "bhimavaram" },
-    { name: "Government Area Hospital", city: "bhimavaram" },
-    { name: "Sree Ramadevi Neuro Hospital", city: "bhimavaram" }
-  ]);
-
-  console.log("🏥 Hospitals seeded");
-  return hospitals;
-};
-
-/* ===============================
-   DOCTORS
-================================ */
-const seedDoctors = async (hospitals) => {
-  await Doctor.deleteMany();
-
-  const doctors = await Doctor.insertMany([
-    {
-      name: "Dr. Suresh Rao",
-      specialization: "General Physician",
-      hospitalId: hospitals[0]._id,
-      city: "bhimavaram",
-      experience: 15,
-      fees: 500,
-      rating: 4.6
-    },
-    {
-      name: "Dr. Lakshmi Devi",
-      specialization: "Gynecologist",
-      hospitalId: hospitals[1]._id,
-      city: "bhimavaram",
-      experience: 12,
-      fees: 700,
-      rating: 4.7
-    },
-    {
-      name: "Dr. Ravi Teja",
-      specialization: "Orthopedist",
-      hospitalId: hospitals[2]._id,
-      city: "bhimavaram",
-      experience: 10,
-      fees: 600,
-      rating: 4.5
-    },
-    {
-      name: "Dr. Anitha Kumari",
-      specialization: "Dermatologist",
-      hospitalId: hospitals[0]._id,
-      city: "bhimavaram",
-      experience: 8,
-      fees: 650,
-      rating: 4.4
-    },
-    {
-      name: "Dr. Kiran Prasad",
-      specialization: "Neurologist",
-      hospitalId: hospitals[4]._id,
-      city: "bhimavaram",
-      experience: 18,
-      fees: 1000,
-      rating: 4.8
-    },
-    {
-      name: "Dr. Naveen Kumar",
-      specialization: "Pediatrician",
-      hospitalId: hospitals[3]._id,
-      city: "bhimavaram",
-      experience: 9,
-      fees: 500,
-      rating: 4.5
-    }
-  ]);
-
-  console.log("👨‍⚕️ Doctors seeded");
-  return doctors;
-};
-
-/* ===============================
-   SLOTS
-================================ */
-const seedSlots = async (doctors) => {
-  await Slot.deleteMany();
-
-  const slots = [];
-  const start = new Date(); // Start from today
-  
-  // Generate for next 7 days
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(start);
-    date.setDate(start.getDate() + i);
-    const dateString = date.toLocaleDateString('en-CA'); // YYYY-MM-DD format local time
-
-    doctors.forEach((doctor) => {
-      // 3 General Periods
-      ["Morning", "Afternoon", "Evening"].forEach((period) => {
-        slots.push({
-          doctorId: doctor._id,
-          date: dateString,
-          time: period,       // e.g., "Morning"
-          period: period.toLowerCase(), // "morning"
-          isBooked: false
-        });
-      });
-    });
-  }
-
-  await Slot.insertMany(slots);
-  console.log("⏰ Generic Period Slots seeded for 7 days");
-};
-
-/* ===============================
-   RUN SEEDER
-================================ */
-const runSeeder = async () => {
+const seedData = async () => {
   try {
-    await connectDB();
+    // 1. Clear existing data
+    await Hospital.deleteMany();
+    await Doctor.deleteMany();
+    console.log("🧹 Cleared existing Hospital and Doctor data");
 
-    const hospitals = await seedHospitals();
-    const doctors = await seedDoctors(hospitals);
-    await seedSlots(doctors);
+    // 2. Seed Hospitals
+    const hospitals = await Hospital.insertMany([
+      {
+        name: "Sri Aditya Multi Speciality Hospital",
+        city: "bhimavaram",
+        location: { lat: 16.5449, lng: 81.5212 } // Center-isch
+      },
+      {
+        name: "Anjali Hospital",
+        city: "bhimavaram",
+        location: { lat: 16.5465, lng: 81.5230 } // North East
+      },
+      {
+        name: "Vijaya Super Speciality Hospital",
+        city: "bhimavaram",
+        location: { lat: 16.5432, lng: 81.5195 } // South West
+      },
+      {
+        name: "Government Area Hospital",
+        city: "bhimavaram",
+        location: { lat: 16.5478, lng: 81.5201 } // North
+      },
+      {
+        name: "Sree Ramadevi Neuro Hospital",
+        city: "bhimavaram",
+        location: { lat: 16.5420, lng: 81.5188 } // South West
+      }
+    ]);
+    console.log(`🏥 Seeded ${hospitals.length} Hospitals`);
 
-    console.log("🌱 Seeding completed successfully");
-    process.exit();
+    // Helper to find hospital by name substring
+    const findHosp = (name) => hospitals.find(h => h.name.includes(name))._id;
+
+    // 3. Seed Doctors
+    const doctors = await Doctor.insertMany([
+      // General Physicians (Fever)
+      {
+        name: "Dr. K. Suryanarayana",
+        specialization: "General Physician",
+        hospitalId: findHosp("Sri Aditya"),
+        city: "bhimavaram",
+        experience: 15,
+        fees: 500,
+        rating: 4.8
+      },
+      {
+        name: "Dr. P. Venkat Rao",
+        specialization: "General Physician",
+        hospitalId: findHosp("Government"),
+        city: "bhimavaram",
+        experience: 20,
+        fees: 200,
+        rating: 4.2
+      },
+
+      // Dermatologist (Skin)
+      {
+        name: "Dr. L. Swathi",
+        specialization: "Dermatologist",
+        hospitalId: findHosp("Anjali"),
+        city: "bhimavaram",
+        experience: 8,
+        fees: 600,
+        rating: 4.9
+      },
+
+      // Neurologist (Headache)
+      {
+        name: "Dr. R. Murthy",
+        specialization: "Neurologist",
+        hospitalId: findHosp("Ramadevi"),
+        city: "bhimavaram",
+        experience: 25,
+        fees: 1000,
+        rating: 4.7
+      },
+
+      // Gastroenterologist (Stomach)
+      {
+        name: "Dr. B. Subba Rao",
+        specialization: "Gastroenterologist",
+        hospitalId: findHosp("Sri Aditya"),
+        city: "bhimavaram",
+        experience: 12,
+        fees: 700,
+        rating: 4.6
+      },
+
+      // Orthopedist (Back pain)
+      {
+        name: "Dr. V. Satyanarayana",
+        specialization: "Orthopedist",
+        hospitalId: findHosp("Vijaya"),
+        city: "bhimavaram",
+        experience: 18,
+        fees: 800,
+        rating: 4.5
+      },
+      
+      // Psychiatrist (Anxiety)
+      {
+        name: "Dr. M. Kavitha",
+        specialization: "Psychiatrist",
+        hospitalId: findHosp("Ramadevi"),
+        city: "bhimavaram",
+        experience: 10,
+        fees: 900,
+        rating: 4.8
+      },
+      
+      // Ophthalmologist (Eye)
+      {
+        name: "Dr. S. Ravi Kumar",
+        specialization: "Ophthalmologist",
+        hospitalId: findHosp("Anjali"),
+        city: "bhimavaram",
+        experience: 14,
+        fees: 400,
+        rating: 4.4
+      }
+    ]);
+
+    console.log(`👨‍⚕️ Seeded ${doctors.length} Doctors`);
+    return { hospitals, doctors };
+
   } catch (error) {
-    console.error("❌ Seeding error:", error);
-    process.exit(1);
+    console.error("Error seeding data:", error);
+    throw error;
   }
 };
 
-runSeeder();
+export default seedData;

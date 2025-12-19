@@ -1,8 +1,8 @@
 import express from "express";
-import { getDoctors } from "../controllers/doctor.controller.js";
+import { getNearbyDoctors } from "../controllers/doctor.controller.js";
 
 const router = express.Router();
 
-router.get("/", getDoctors);
+router.post("/nearby", getNearbyDoctors);
 
 export default router;

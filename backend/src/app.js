@@ -24,6 +24,9 @@ app.use('/api/v1/auth', authRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/slots", slotRoutes);
 app.use("/api/appointments", appointmentRoutes);
+import remedyRoutes from "./routes/remedyRoutes.js";
+app.use("/api", remedyRoutes);
+
 // ❗ GLOBAL ERROR HANDLER (MUST)
 app.use((err, req, res, next) => {
   console.error("🔥 Error:", err);

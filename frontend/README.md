@@ -11,3 +11,4 @@ https://github.com/Amrutha9010/Hack2K25.git
 npm install jsonwebtoken bcryptjs nodemailer
 npm install crypto
 npm i mongoose express nodemon
+npm i openai

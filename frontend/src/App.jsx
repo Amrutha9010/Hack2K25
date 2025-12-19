@@ -12,7 +12,7 @@ import Footer from "./components/Footer";
 import About from "./components/About";
 
 // Pages
-import Home from "./pages/Home";
+import Home from "./pages/UserHomePage";
 
 // Patient
 import AppointmentBooking from "./pages/user/AppointmentBooking";

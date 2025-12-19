@@ -1,0 +1,173 @@
+.main-section {
+  position: relative;
+  width: 100%;
+  /* Flex layout to push Footer to bottom */
+}
+
+.main-section img {
+  position: absolute;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  border: 1px solid black;
+  /* Professional white border */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  /* Soft shadow for depth */
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* Smoother animation */
+  transform: translate(-50%, -50%);
+  /* Centering anchor */
+}
+
+.main-section img:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* 
+  Refined Arc Layout Configuration:
+  Center Y: 250px 
+  Radius: 300px (Increased for 150px images)
+*/
+
+/* Left (180°) */
+.three {
+  left: calc(50% - 300px);
+  top: 250px;
+  margin: 0;
+}
+
+/* Bottom-Left (135°) */
+.four {
+  left: calc(50% - 212px);
+  /* 212px ≈ 300 * cos(45°) */
+  top: 462px;
+  /* 250 + 212 */
+  margin: 0;
+}
+
+/* Bottom (90°) */
+.five {
+  left: 50%;
+  top: 550px;
+  /* 250 + 300 */
+  margin: 0;
+}
+
+/* Bottom-Right (45°) */
+.six {
+  left: calc(50% + 212px);
+  top: 462px;
+  margin: 0;
+}
+
+/* Right (0°) */
+.seven {
+  left: calc(50% + 300px);
+  top: 250px;
+  margin: 0;
+}
+
+/* Inactive classes kept for safety but unused */
+.one,
+.two,
+.eight,
+.nine {
+  display: none;
+}
+
+/* Feature Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  /* Dimmed backdrop */
+  backdrop-filter: blur(8px);
+  /* Strong blur for focus */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  /* Above Navbar and everything */
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  width: 80%;
+  max-width: 600px;
+  min-height: 400px;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f0f5;
+  color: #333;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #e1e1e6;
+  transform: rotate(90deg);
+}
+
+/* Feature Container Default Styling */
+.feature-container {
+  text-align: center;
+  width: 100%;
+}
+
+.feature-container h2 {
+  font-family: Didot, serif;
+  font-size: 2rem;
+  color: #002d5c;
+  margin-bottom: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
