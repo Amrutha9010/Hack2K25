@@ -9,6 +9,7 @@ import fourImage from "../images/f2.jpg";
 import fiveImage from "../images/f3.jpg";
 import sixImage from "../images/f4.jpg";
 import sevenImage from "../images/f5.jpg";
+import SOSButton from "../components/SOSButton";
 
 function UserHomePage() {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ function UserHomePage() {
   return (
     <>
       <Navbar />
-
       <div
         className="main-section"
         style={{
@@ -65,6 +65,7 @@ function UserHomePage() {
           title="Lab Testing"
         />
       </div>
+      <SOSButton />
 
       <Footer />
     </>

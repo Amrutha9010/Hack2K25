@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
+    "@react-google-maps/api": "^2.20.8",
     "@supabase/supabase-js": "^2.87.2",
     "axios": "^1.13.2",
     "framer-motion": "^12.23.26",
