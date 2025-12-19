@@ -116,7 +116,7 @@ function About() {
           </div>
         </div>
 
-        <div className="team-section">
+        {/* <div className="team-section">
           <h3 
             ref={el => aboutRefs.current[2] = el}
             className="team-title fade-in"
@@ -148,9 +148,9 @@ function About() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
-        <div className="milestones-section">
+        {/* <div className="milestones-section">
           <h3 
             ref={el => aboutRefs.current[7] = el}
             className="milestones-title fade-in"
@@ -173,7 +173,7 @@ function About() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="values-section">
           <h3 

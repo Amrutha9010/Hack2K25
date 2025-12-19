@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Landing components
 import Header from "./components/Header";
@@ -17,13 +18,15 @@ import Home from "./pages/Home";
 import AppointmentBooking from "./pages/user/AppointmentBooking";
 import BookingConfirmation from "./pages/user/BookingConfirmation";
 import AppointmentList from "./pages/user/AppointmentList";
+import Remedies from "./pages/user/Remedies";
+// import VideoConsultation from "./pages/user/appointment-steps/VideoConsultation.jsx";
 
 // Doctor
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import AppointmentManagement from "./pages/doctor/AppointmentManagement";
 import VideoConsultation from "./pages/doctor/VideoConsultation";
 
-// 🔐 Auth (NEW)
+// Auth
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import ForgotPassword from "./auth/ForgotPassword";
@@ -31,88 +34,98 @@ import ForgotPassword from "./auth/ForgotPassword";
 import "./App.css";
 
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [userRole, setUserRole] = useState("patient");
   const [currentPage, setCurrentPage] = useState("landing");
   const [bookingData, setBookingData] = useState(null);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
-  const [showForgotModal, setShowForgotModal] = useState(false);
 
-  /* ---------------- Auth Navigation ---------------- */
+  /* ================= URL → STATE SYNC ================= */
+  useEffect(() => {
+    const path = location.pathname;
+
+    switch (path) {
+      case "/":
+        setCurrentPage("landing");
+        break;
+      case "/login":
+        setCurrentPage("login");
+        break;
+      case "/register":
+        setCurrentPage("register");
+        break;
+      case "/forgot-password":
+        setCurrentPage("forgot");
+        break;
+      case "/home":
+        setCurrentPage("home");
+        break;
+      case "/booking":
+        setCurrentPage("booking");
+        break;
+      case "/appointments":
+        setCurrentPage("list");
+        break;
+      case "/confirmation":
+        setCurrentPage("confirmation");
+        break;
+      case "/remedies":
+        setCurrentPage("remedies");
+        break;
+      case "/doctor/dashboard":
+        setCurrentPage("dashboard");
+        break;
+      case "/doctor/management":
+        setCurrentPage("management");
+        break;
+      case "/doctor/consultation":
+        setCurrentPage("consultation");
+        break;
+      default:
+        setCurrentPage("landing");
+    }
+  }, [location.pathname]);
+
+  /* ================= STATE → URL HELPERS ================= */
+  const go = (page, url) => {
+    setCurrentPage(page);
+    navigate(url);
+  };
+
+  /* ================= AUTH ================= */
   const handleLoginSuccess = (role) => {
     setUserRole(role);
-    setCurrentPage(role === "doctor" ? "dashboard" : "home");
+    go(
+      role === "doctor" ? "dashboard" : "home",
+      role === "doctor" ? "/doctor/dashboard" : "/home"
+    );
   };
 
   const handleLogout = () => {
     localStorage.clear();
     setUserRole("patient");
-    setCurrentPage("landing");
+    go("landing", "/");
   };
 
-  /* ---------------- Patient Flow ---------------- */
+  /* ================= PATIENT ================= */
   const handleBookingSuccess = (data) => {
     setBookingData(data);
-    setCurrentPage("confirmation");
+    go("confirmation", "/confirmation");
   };
 
-  const handleViewAppointments = () => setCurrentPage("list");
-  const handleBackToBooking = () => setCurrentPage("booking");
-
-  /* ---------------- Doctor Flow ---------------- */
-  const handleManageAppointment = (id) => {
-    setSelectedAppointmentId(id);
-    setCurrentPage("management");
-  };
-
-  const handleStartConsultation = (id) => {
-    setSelectedAppointmentId(id);
-    setCurrentPage("consultation");
-  };
-
-  const handleBackToDashboard = () => setCurrentPage("dashboard");
-
-  /* ---------------- Common Navigation ---------------- */
-  const handleNavigateToBooking = () => setCurrentPage("booking");
-  const handleNavigateToHome = () => setCurrentPage("home");
-  const handleNavigateToLanding = () => setCurrentPage("landing");
-  const handleGetStarted = () => setCurrentPage("login");
-  const handleDoctorLogin = () => {
-    setUserRole("doctor");
-    setCurrentPage("dashboard");
-  };
-
-  /* ---------------- Landing Page ---------------- */
+  /* ================= LANDING PAGE ================= */
   const renderLandingPage = () => (
     <>
-      <Header onNavigateToBooking={handleNavigateToBooking} />
-      <Hero onGetStarted={handleGetStarted} />
+      <Header onNavigateToBooking={() => go("booking", "/booking")} />
+      <Hero onGetStarted={() => go("login", "/login")} />
       <Features />
       <HowItWorks />
       <About />
       <Testimonials />
       <Contact />
       <Footer />
-
-      {/* Floating buttons */}
-      <div className="floating-buttons">
-        <button
-          className="floating-btn chat-btn"
-          onClick={handleNavigateToBooking}
-        >
-          <i className="fas fa-calendar-check"></i>
-          <span className="tooltip">Book Appointment</span>
-        </button>
-
-        <button className="floating-btn emergency-btn">
-          <i className="fas fa-ambulance"></i>
-          <span className="tooltip">Emergency</span>
-        </button>
-
-        <button className="floating-btn scan-btn">
-          <i className="fas fa-camera"></i>
-          <span className="tooltip">Scan Tablet</span>
-        </button>
-      </div>
     </>
   );
 
@@ -124,34 +137,36 @@ function App() {
       {/* -------- AUTH -------- */}
       {currentPage === "login" && (
         <Login
-          onLoginSuccess={(role) => {
-            setUserRole(role);
-            setCurrentPage(role === "doctor" ? "dashboard" : "home");
-          }}
-          onGoToRegister={() => setCurrentPage("register")}
-          onGoToForgot={() => setCurrentPage("forgot")}
+          onLoginSuccess={handleLoginSuccess}
+          onGoToRegister={() => go("register", "/register")}
+          onGoToForgot={() => go("forgot", "/forgot-password")}
         />
       )}
 
       {currentPage === "register" && (
         <Register
-          onGoToLogin={() => setCurrentPage("login")}
-          onRegisterSuccess={(role) => {
-            setUserRole(role);
-            setCurrentPage(role === "doctor" ? "dashboard" : "home");
-          }}
+          onGoToLogin={() => go("login", "/login")}
+          onRegisterSuccess={(role) =>
+            handleLoginSuccess(role === "hospital" ? "doctor" : "patient")
+          }
         />
       )}
 
       {currentPage === "forgot" && (
-        <ForgotPassword onClose={() => setCurrentPage("login")} />
+        <ForgotPassword onClose={() => go("login", "/login")} />
       )}
 
       {/* -------- HOME -------- */}
       {currentPage === "home" && (
         <Home
-          onBookAppointment={handleNavigateToBooking}
-          onDoctorLogin={handleDoctorLogin}
+          onBookAppointment={() => {
+            setUserRole("patient");
+            go("booking", "/booking");
+          }}
+          onDoctorLogin={() => {
+            setUserRole("doctor");
+            go("dashboard", "/doctor/dashboard");
+          }}
         />
       )}
 
@@ -161,26 +176,41 @@ function App() {
           {currentPage === "booking" && (
             <AppointmentBooking
               onSuccess={handleBookingSuccess}
-              onViewAppointments={handleViewAppointments}
-              onBackToHome={handleNavigateToHome}
+              onViewAppointments={() => go("list", "/appointments")}
+              onBackToHome={() => go("home", "/home")}
             />
           )}
 
           {currentPage === "confirmation" && (
             <BookingConfirmation
               bookingData={bookingData}
-              onViewAppointments={handleViewAppointments}
-              onBackToBooking={handleBackToBooking}
-              onBackToHome={handleNavigateToHome}
+              onViewAppointments={() => go("list", "/appointments")}
+              onBackToBooking={() => go("booking", "/booking")}
+              onBackToHome={() => go("home", "/home")}
             />
           )}
 
           {currentPage === "list" && (
             <AppointmentList
-              onBackToBooking={handleBackToBooking}
-              onBackToHome={handleNavigateToHome}
+              onBackToBooking={() => go("booking", "/booking")}
+              onBackToHome={() => go("home", "/home")}
             />
           )}
+
+          {currentPage === "remedies" && (
+            <Remedies
+              onBackToHome={() => go("home", "/home")}
+              onBookAppointment={() => go("booking", "/booking")}
+            />
+          )}
+
+          {/* {currentPage === "video-consultation" && (
+            <VideoConsultation
+              appointmentId={selectedAppointmentId}
+              onBack={() => go("list", "/appointments")}
+              onBackToHome={() => go("home", "/home")}
+            />
+          )} */}
         </>
       )}
 
@@ -190,34 +220,30 @@ function App() {
           {currentPage === "dashboard" && (
             <DoctorDashboard
               onLogout={handleLogout}
-              onManage={handleManageAppointment}
-              onBackToHome={handleNavigateToHome}
+              onManage={(id) => {
+                setSelectedAppointmentId(id);
+                go("management", "/doctor/management");
+              }}
+              onBackToHome={() => go("home", "/home")}
             />
           )}
 
           {currentPage === "management" && (
             <AppointmentManagement
               appointmentId={selectedAppointmentId}
-              onBack={handleBackToDashboard}
-              onBackToHome={handleNavigateToHome}
+              onBack={() => go("dashboard", "/doctor/dashboard")}
+              onBackToHome={() => go("home", "/home")}
             />
           )}
 
           {currentPage === "consultation" && (
             <VideoConsultation
               appointmentId={selectedAppointmentId}
-              onBack={handleBackToDashboard}
-              onBackToHome={handleNavigateToHome}
+              onBack={() => go("dashboard", "/doctor/dashboard")}
+              onBackToHome={() => go("home", "/home")}
             />
           )}
         </>
-      )}
-
-      {/* -------- BACK BUTTON -------- */}
-      {currentPage !== "landing" && (
-        <button onClick={handleNavigateToLanding} className="back-home-btn">
-          <i className="fas fa-home"></i> Back to Landing
-        </button>
       )}
     </div>
   );

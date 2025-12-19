@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import doctorRoutes from "./routes/doctor.routes.js";
+import slotRoutes from "./routes/slot.routes.js";
+import appointmentRoutes from "./routes/appointment.routes.js";
 
 const app = express();
 
@@ -18,6 +21,9 @@ app.get('/health', (req, res) => {
 // Routes (we will add later)
 import authRoutes from './routes/auth.routes.js';
 app.use('/api/v1/auth', authRoutes);
+app.use("/api/doctors", doctorRoutes);
+app.use("/api/slots", slotRoutes);
+app.use("/api/appointments", appointmentRoutes);
 // ❗ GLOBAL ERROR HANDLER (MUST)
 app.use((err, req, res, next) => {
   console.error("🔥 Error:", err);

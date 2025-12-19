@@ -41,7 +41,6 @@ function Hero({ onGetStarted }) {
             </p>
 
             <div className="hero-buttons">
-              {/* ✅ GET STARTED → LOGIN / REGISTER */}
               <button
                 type="button"
                 onClick={() => {
@@ -53,9 +52,9 @@ function Hero({ onGetStarted }) {
                 <i className="fas fa-rocket"></i> Get Started
               </button>
 
-              <button type="button" className="btn btn-outline hero-btn">
+              {/* <button type="button" className="btn btn-outline hero-btn">
                 <i className="fas fa-download"></i> Download App
-              </button>
+              </button> */}
             </div>
 
             <div className="hero-stats">

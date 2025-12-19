@@ -1,0 +1,608 @@
+/* ===============================
+   ROOT PAGE
+================================ */
+.remedies-page {
+  padding: 50px 40px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0fdfa 100%);
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.remedies-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(94, 234, 212, 0.05) 100%);
+  z-index: 0;
+}
+
+/* ===============================
+   PAGE TITLE
+================================ */
+.page-title {
+  text-align: center;
+  font-size: 42px;
+  font-weight: 800;
+  color: #1e40af;
+  margin-bottom: 50px;
+  letter-spacing: 0.5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  padding-top: 20px;
+}
+
+.page-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #14b8a6, #0d9488);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* ===============================
+   CATEGORY GRID
+================================ */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 35px;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ===============================
+   CATEGORY CARD
+================================ */
+.category-card {
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(30, 64, 175, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(94, 234, 212, 0.1));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+}
+
+.category-card::after {
+  content: "Click to explore →";
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d9488;
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 2;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-card:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 30px 60px rgba(30, 64, 175, 0.25);
+  border-color: #5eead4;
+}
+
+.category-card:hover::before {
+  opacity: 1;
+}
+
+.category-card:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.category-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  filter: brightness(0.95);
+}
+
+.category-card:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+.category-card h3 {
+  padding: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e40af;
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  margin: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.category-card:hover h3 {
+  color: #0d9488;
+  background: linear-gradient(135deg, #f0fdfa, #ffffff);
+}
+
+/* ===============================
+   BACK BUTTON
+================================ */
+.back-btn {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 2px solid #5eead4;
+  color: #2563eb;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+  padding: 12px 28px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.back-btn:hover {
+  color: #1e40af;
+  background: linear-gradient(135deg, #f0fdfa, #ffffff);
+  border-color: #14b8a6;
+  transform: translateX(-5px);
+  box-shadow: 0 12px 35px rgba(13, 148, 136, 0.2);
+}
+
+.back-btn::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #14b8a6, #5eead4);
+  border-radius: 52px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.back-btn:hover::before {
+  opacity: 0.3;
+}
+
+/* ===============================
+   CATEGORY TITLE
+================================ */
+.category-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0d9488;
+  margin: 30px 0 45px;
+  text-transform: capitalize;
+  position: relative;
+  padding-bottom: 15px;
+  z-index: 1;
+}
+
+.category-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 5px;
+  background: linear-gradient(90deg, #14b8a6, #5eead4);
+  border-radius: 3px;
+  box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+}
+
+/* ===============================
+   REMEDY GRID
+================================ */
+.remedy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 35px;
+  position: relative;
+  z-index: 1;
+  padding: 20px 0;
+}
+
+/* ===============================
+   REMEDY CARD
+================================ */
+.remedy-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  padding: 32px 28px;
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+  border-left: 8px solid #14b8a6;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.remedy-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #14b8a6, #5eead4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.remedy-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 35px 70px rgba(20, 184, 166, 0.3);
+  border-left-color: #0d9488;
+}
+
+.remedy-card:hover::before {
+  opacity: 1;
+}
+
+.remedy-card h3 {
+  font-size: 24px;
+  color: #1e40af;
+  margin-bottom: 20px;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.remedy-card h3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #14b8a6, #5eead4);
+  border-radius: 2px;
+}
+
+.remedy-card p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 12px;
+  padding-left: 5px;
+  position: relative;
+}
+
+.remedy-card b {
+  color: #0d9488;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 120px;
+}
+
+/* ===============================
+   CAUTION
+================================ */
+.caution {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.1), rgba(251, 113, 133, 0.05));
+  border-left: 6px solid #fb7185;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #be123c;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.caution::before {
+  content: "⚠";
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  font-size: 24px;
+  opacity: 0.2;
+}
+
+/* ===============================
+   AI BOX
+================================ */
+.ai-box {
+  margin-top: 70px;
+  background: linear-gradient(135deg, #ffffff, #f0fdfa);
+  padding: 40px 35px;
+  border-radius: 28px;
+  box-shadow: 0 25px 60px rgba(13, 148, 136, 0.3);
+  border-left: 10px solid #14b8a6;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.ai-box::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #14b8a6, #5eead4, #14b8a6);
+  border-radius: 30px;
+  z-index: -1;
+  opacity: 0.1;
+  animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.ai-box h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0d9488;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.ai-box h3::after {
+  content: "";
+  flex: 1;
+  height: 3px;
+  background: linear-gradient(90deg, #0d9488, transparent);
+  border-radius: 2px;
+  margin-left: 15px;
+}
+
+/* ===============================
+   AI INPUT
+================================ */
+.ai-box input {
+  width: 100%;
+  padding: 18px 24px;
+  font-size: 17px;
+  border-radius: 18px;
+  border: 2px solid #5eead4;
+  outline: none;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  color: #1e293b;
+  box-shadow: 0 8px 25px rgba(20, 184, 166, 0.15);
+}
+
+.ai-box input::placeholder {
+  color: #64748b;
+  font-weight: 400;
+}
+
+.ai-box input:focus {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 5px rgba(20, 184, 166, 0.25),
+              0 12px 35px rgba(20, 184, 166, 0.3);
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   AI BUTTON
+================================ */
+.ai-box button {
+  margin-top: 25px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 15px 35px rgba(13, 148, 136, 0.4);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.ai-box button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.ai-box button:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 25px 50px rgba(13, 148, 136, 0.6);
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+}
+
+.ai-box button:hover::before {
+  left: 100%;
+}
+
+.ai-box button:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ===============================
+   AI RESULT
+================================ */
+.ai-result {
+  margin-top: 35px;
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  padding: 28px 32px;
+  border-radius: 20px;
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #1e293b;
+  border-left: 8px solid #2563eb;
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15);
+  position: relative;
+  animation: fadeInUp 0.6s ease;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ai-result::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ai-result::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.ai-result::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  border-radius: 4px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   LOADING STATE
+================================ */
+.ai-box button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+================================ */
+@media (max-width: 768px) {
+  .remedies-page {
+    padding: 30px 20px;
+  }
+  
+  .page-title {
+    font-size: 32px;
+  }
+  
+  .category-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 10px;
+  }
+  
+  .remedy-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .ai-box {
+    padding: 30px 25px;
+  }
+  
+  .category-card {
+    height: 280px;
+  }
+  
+  .category-card img {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 28px;
+  }
+  
+  .category-title {
+    font-size: 28px;
+  }
+  
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .remedy-card {
+    padding: 24px 20px;
+  }
+  
+  .ai-box input {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+/* ===============================
+   FADE IN ANIMATION
+================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-card,
+.remedy-card,
+.ai-box {
+  animation: fadeIn 0.6s ease-out forwards;
+}

@@ -5,6 +5,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const connectDB = async () => {
+  const connectDB = async () => {
+  console.log("SERVER DB URI 👉", process.env.MONGO_URI); // 🔥 ADD THIS
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("✅ MongoDB Connected");
+};
+
   try {
     console.log('[DB] Attempting to connect to MongoDB...');
     

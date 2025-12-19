@@ -24,7 +24,7 @@ function Header({ onNavigateToBooking }) {
         <nav className="navbar">
           <div className="logo">
             <i className="fas fa-heartbeat logo-icon"></i>
-            <span className="logo-text">Health<span className="logo-highlight">Connect</span></span>
+            <span className="logo-text">MediSense<span className="logo-highlight"> 360</span></span>
           </div>
           
           <div className={`nav-links ${mobileMenuOpen ? 'active' : ''}`}>

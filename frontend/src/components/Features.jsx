@@ -31,9 +31,9 @@ function Features() {
       color: '#0D9488'
     },
     {
-      icon: 'fa-hospital',
-      title: 'Hospital Finder',
-      description: 'Instantly locate nearby hospitals with real-time availability and directions.',
+      icon: 'fa-robot',
+      title: 'AI Assistant',
+      description: 'AI-powered chatbot for instant health advice and symptom checking.',
       color: '#1E40AF'
     },
     {
@@ -54,24 +54,24 @@ function Features() {
       description: 'Identify and find medicines across medical stores and e-commerce platforms.',
       color: '#5EEAD4'
     },
-    {
-      icon: 'fa-tablets',
-      title: 'Tablet Recognition',
-      description: 'Scan tablet photos to instantly classify them into medical categories.',
-      color: '#8B5CF6'
-    },
+    // {
+    //   icon: 'fa-tablets',
+    //   title: 'Tablet Recognition',
+    //   description: 'Scan tablet photos to instantly classify them into medical categories.',
+    //   color: '#8B5CF6'
+    // },
     {
       icon: 'fa-file-medical',
       title: 'Report Summarization',
       description: 'Scan medical reports to get simple, easy-to-understand summaries.',
       color: '#F59E0B'
     },
-    {
-      icon: 'fa-bell',
-      title: 'Remedy Tracking',
-      description: 'Track if home remedies helped and get automatic hospital recommendations.',
-      color: '#10B981'
-    }
+    // {
+    //   icon: 'fa-bell',
+    //   title: 'Remedy Tracking',
+    //   description: 'Track if home remedies helped and get automatic hospital recommendations.',
+    //   color: '#10B981'
+    // }
   ];
 
   return (

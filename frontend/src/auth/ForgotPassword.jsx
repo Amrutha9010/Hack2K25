@@ -13,18 +13,13 @@ function ForgotPassword({ onClose }) {
 
   const otpRefs = useRef([]);
 
-  const clearMessageAfterDelay = () => {
-    setTimeout(() => setMessage(""), 5000);
-  };
+  const clearAfter = (fn) => setTimeout(fn, 4000);
 
-  const clearOtpMessageAfterDelay = () => {
-    setTimeout(() => setOtpMessage(""), 5000);
-  };
-
+  /* ================= SEND OTP ================= */
   const sendOtp = async () => {
     if (!identifier.trim()) {
-      setMessage("❗ Please enter your phone number or email.");
-      clearMessageAfterDelay();
+      setMessage("❗ Please enter your email");
+      clearAfter(() => setMessage(""));
       return;
     }
 
@@ -32,145 +27,132 @@ function ForgotPassword({ onClose }) {
       await axios.post("/api/v1/auth/send-otp", { identifier });
       setMessage(`OTP sent to ${identifier}`);
     } catch (error) {
-      setMessage(
-        `❗ ${error.response?.data?.message || "Failed to send OTP"}`
-      );
+      setMessage(error.response?.data?.message || "Failed to send OTP");
     }
 
-    setOtpVerified(false);
-    clearMessageAfterDelay();
+    clearAfter(() => setMessage(""));
   };
 
+  /* ================= OTP INPUT ================= */
   const handleOtpInput = (index, e) => {
-    const value = e.target.value;
-    const updatedOtp = [...otpDigits];
-    updatedOtp[index] = value;
-    setOtpDigits(updatedOtp);
+    const value = e.target.value.replace(/\D/, ""); // numbers only
 
-    if (value && index < otpDigits.length - 1) {
-      otpRefs.current[index + 1]?.focus();
-    }
+    if (!value) return;
+
+    const updated = [...otpDigits];
+    updated[index] = value;
+    setOtpDigits(updated);
+
+    if (index < 5) otpRefs.current[index + 1]?.focus();
   };
 
   const handleBackspace = (index, e) => {
-    if (e.key === "Backspace" && !otpDigits[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus();
-      const updatedOtp = [...otpDigits];
-      updatedOtp[index - 1] = "";
-      setOtpDigits(updatedOtp);
+    if (e.key === "Backspace") {
+      const updated = [...otpDigits];
+      updated[index] = "";
+      setOtpDigits(updated);
+
+      if (index > 0) otpRefs.current[index - 1]?.focus();
     }
   };
 
+  /* ================= VERIFY OTP ================= */
   const verifyOtp = async () => {
-    const otp = otpDigits.map(d => d.trim()).join("");
+    const otp = otpDigits.join("");
 
-    if (otp.length !== 6 || otpDigits.some(d => !d.trim())) {
-      setOtpMessage("❗ Please enter complete 6-digit OTP.");
-      clearOtpMessageAfterDelay();
+    if (otp.length !== 6) {
+      setOtpMessage("❗ Enter complete 6-digit OTP");
+      clearAfter(() => setOtpMessage(""));
       return;
     }
 
     try {
-      await axios.post("/api/v1/auth/verify-otp", {
-        identifier,
-        otp,
-      });
+      await axios.post("/api/v1/auth/verify-otp", { identifier, otp });
       setOtpVerified(true);
-      setOtpMessage("OTP verified successfully!");
+      setOtpMessage("✅ OTP verified");
     } catch (error) {
-      setOtpMessage(
-        `❗ ${error.response?.data?.message || "Invalid OTP"}`
-      );
+      setOtpMessage(error.response?.data?.message || "Invalid OTP");
     }
 
-    clearOtpMessageAfterDelay();
+    clearAfter(() => setOtpMessage(""));
   };
 
+  /* ================= RESET PASSWORD ================= */
   const resetPassword = async () => {
     if (!otpVerified) {
-      setMessage("❗ Please verify your OTP first.");
-      clearMessageAfterDelay();
-      return;
-    }
-
-    if (!newPassword || !confirmPassword) {
-      setMessage("❗ Please enter and confirm new password.");
-      clearMessageAfterDelay();
+      setMessage("❗ Verify OTP first");
+      clearAfter(() => setMessage(""));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setMessage("❗ Passwords do not match.");
-      clearMessageAfterDelay();
+      setMessage("❗ Passwords do not match");
+      clearAfter(() => setMessage(""));
       return;
     }
 
     try {
-      const otp = otpDigits.join("");
-
       await axios.post("/api/v1/auth/reset-password", {
         identifier,
-        otp,
+        otp: otpDigits.join(""),
         newPassword,
         confirmPassword,
       });
 
-      setMessage("🎉 Password reset successful!");
-      setIdentifier("");
-      setOtpDigits(["", "", "", "", "", ""]);
-      setNewPassword("");
-      setConfirmPassword("");
-      setOtpVerified(false);
-
-      setTimeout(() => onClose(), 2000);
+      setMessage("🎉 Password reset successful");
+      clearAfter(onClose);
     } catch (error) {
-      setMessage(
-        `❗ ${error.response?.data?.message || "Password reset failed"}`
-      );
+      setMessage(error.response?.data?.message || "Reset failed");
+      clearAfter(() => setMessage(""));
     }
-
-    clearMessageAfterDelay();
   };
 
   return (
     <div className="forgot-wrapper">
       <div className="forgot-container">
-        <button className="close-button" onClick={onClose}>×</button>
+        <button
+          type="button"
+          className="close-button"
+          onClick={onClose}
+        >
+          ×
+        </button>
 
         <h2 className="forgot-heading">Forgot Password</h2>
 
         <input
           type="text"
-          placeholder="Phone number or email"
+          placeholder="Enter registered email"
           value={identifier}
-          onChange={e => setIdentifier(e.target.value)}
+          onChange={(e) => setIdentifier(e.target.value)}
           className="input-field"
         />
 
         <button
-          className={`action-button ${!identifier.trim() ? "disabled-button" : ""}`}
+          type="button"
+          className="action-button"
           onClick={sendOtp}
-          disabled={!identifier.trim()}
         >
           Send OTP
         </button>
 
+        {/* OTP INPUT */}
         <div className="otp-group">
           {otpDigits.map((digit, index) => (
             <input
               key={index}
-              ref={el => (otpRefs.current[index] = el)}
+              ref={(el) => (otpRefs.current[index] = el)}
               type="text"
               maxLength="1"
               className="otp-input"
               value={digit}
-              onChange={e => handleOtpInput(index, e)}
-              onKeyDown={e => handleBackspace(index, e)}
+              onChange={(e) => handleOtpInput(index, e)}
+              onKeyDown={(e) => handleBackspace(index, e)}
             />
           ))}
         </div>
 
-        <button className="action-button" onClick={verifyOtp}>
+        <button type="button" className="action-button" onClick={verifyOtp}>
           Verify OTP
         </button>
 
@@ -178,7 +160,7 @@ function ForgotPassword({ onClose }) {
           type="password"
           placeholder="New Password"
           value={newPassword}
-          onChange={e => setNewPassword(e.target.value)}
+          onChange={(e) => setNewPassword(e.target.value)}
           className="input-field"
         />
 
@@ -186,11 +168,11 @@ function ForgotPassword({ onClose }) {
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
-          onChange={e => setConfirmPassword(e.target.value)}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           className="input-field"
         />
 
-        <button className="action-button" onClick={resetPassword}>
+        <button type="button" className="action-button" onClick={resetPassword}>
           Reset Password
         </button>
 
@@ -198,17 +180,8 @@ function ForgotPassword({ onClose }) {
           ← Back to Login
         </p>
 
-        {otpMessage && (
-          <p className={`message ${otpMessage.startsWith("❗") ? "error-message" : "success-message"}`}>
-            {otpMessage}
-          </p>
-        )}
-
-        {message && (
-          <p className={`message ${message.startsWith("❗") ? "error-message" : "success-message"}`}>
-            {message}
-          </p>
-        )}
+        {otpMessage && <p className="message">{otpMessage}</p>}
+        {message && <p className="message">{message}</p>}
       </div>
     </div>
   );
