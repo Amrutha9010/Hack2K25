@@ -1,63 +1,91 @@
 // /pages/user/appointment-steps/SlotSelection.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SlotSelection.css';
 
-const SlotSelection = ({ selectedDoctor }) => {
+const SlotSelection = ({ selectedDoctor, doctorInfo, onSuccess }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [consultationType, setConsultationType] = useState('in-person'); // Default
-  const [selectedDate, setSelectedDate] = useState('today');
+  const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('en-CA'));
   const [selectedTime, setSelectedTime] = useState('');
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
 
-  const doctorInfo = {
-    1: { name: 'Dr. Priya Sharma', clinic: 'SkinCare Clinic' },
-    2: { name: 'Dr. Arjun Reddy', clinic: 'City Skin Hospital' },
-    3: { name: 'Dr. Anjali Mehta', clinic: 'MediSkin Center' }
+  useEffect(() => {
+    const fetchSlots = async () => {
+        setLoading(true);
+        try {
+            if (!selectedDate) return;
+
+            const response = await fetch(`http://localhost:5000/api/slots?doctorId=${selectedDoctor}&date=${selectedDate}`);
+            if (response.ok) {
+                const data = await response.json();
+                setAvailableSlots(data);
+            }
+        } catch (error) {
+            console.error("Error fetching slots:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (selectedDoctor && selectedDate) {
+        fetchSlots();
+    }
+  }, [selectedDoctor, selectedDate]);
+
+  const handleSlotSelect = (period) => {
+    setSelectedTime(period);
+    // Find the actual slot object from availableSlots
+    const slotObj = availableSlots.find(s => s.time === period);
+    
+    if (slotObj) {
+        setSelectedSlot({
+            ...slotObj,
+            displayDate: new Date(selectedDate).toDateString()
+        });
+    }
   };
 
-  const dates = [
-    { id: 'today', label: 'Today', date: new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) },
-    { id: 'tomorrow', label: 'Tomorrow', date: new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) },
-    { id: 'day3', label: new Date(new Date().setDate(new Date().getDate() + 2)).toLocaleDateString('en-US', { weekday: 'short' }), date: new Date(new Date().setDate(new Date().getDate() + 2)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) }
-  ];
-
-  const timeSlots = {
-    morning: ['9:00 AM', '10:30 AM', '11:45 AM'],
-    afternoon: ['1:00 PM', '2:30 PM', '4:00 PM'],
-    evening: ['5:30 PM', '6:45 PM', '8:00 PM']
-  };
-
-  const handleSlotSelect = (time) => {
-    setSelectedTime(time);
-    const dateObj = dates.find(d => d.id === selectedDate);
-    setSelectedSlot({
-      time,
-      date: dateObj.date,
-      period: Object.keys(timeSlots).find(key => timeSlots[key].includes(time))
-    });
-  };
-
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedSlot) {
-      const bookingData = {
-        doctor: doctorInfo[selectedDoctor],
-        slot: selectedSlot,
-        consultationType: consultationType,
-        bookingId: 'BK' + Math.floor(100000 + Math.random() * 900000),
-        date: new Date().toLocaleDateString()
-      };
-      
-      localStorage.setItem('lastBooking', JSON.stringify(bookingData));
-      
-      // If video consultation, generate Meet link
-      if (consultationType === 'video') {
-        const meetLink = `https://meet.google.com/${Math.random().toString(36).substring(2, 10)}`;
-        bookingData.meetLink = meetLink;
-        localStorage.setItem('lastBooking', JSON.stringify(bookingData));
+      try {
+        const payload = {
+            doctorId: selectedDoctor,
+            slotId: selectedSlot._id,
+            consultationType,
+            patient: "Guest User" // Replace with actual user name if auth exists
+        };
+
+        const response = await fetch('http://localhost:5000/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            const bookingData = await response.json();
+            // Add some display info for the confirmation page
+            bookingData.doctor = doctorInfo;
+            bookingData.slot = { ...selectedSlot, date: selectedSlot.displayDate };
+            
+            localStorage.setItem('lastBooking', JSON.stringify(bookingData));
+            if (onSuccess) {
+                onSuccess(bookingData);
+            } else {
+                navigate('/booking-confirmed');
+            }
+        } else {
+            alert('Failed to book appointment');
+        }
+      } catch (error) {
+        console.error("Booking error:", error);
+        alert('Error processing booking');
       }
-      
-      navigate('/booking-confirmed');
     }
   };
 
@@ -66,52 +94,63 @@ const SlotSelection = ({ selectedDoctor }) => {
       <div className="slot-header">
         <h1>🗓️ Select Appointment Slot</h1>
         <div className="doctor-info">
-          <h2>{doctorInfo[selectedDoctor]?.name}</h2>
-          <p>{doctorInfo[selectedDoctor]?.clinic}</p>
+          <h2>{doctorInfo?.name}</h2>
+          <p>{doctorInfo?.clinic}</p>
         </div>
       </div>
 
       {/* Step 1: Choose Date */}
       <div className="section">
         <h3>📅 Select Date</h3>
-        <div className="dates-grid">
-          {dates.map((date) => (
-            <button
-              key={date.id}
-              className={`date-btn ${selectedDate === date.id ? 'selected' : ''}`}
-              onClick={() => {
-                setSelectedDate(date.id);
-                setSelectedTime(''); // Reset time when date changes
-              }}
-            >
-              <div className="date-label">{date.label}</div>
-              <div className="date-value">{date.date}</div>
-            </button>
-          ))}
+        <div className="date-picker-container">
+          <input 
+            type="date" 
+            className="date-input"
+            value={selectedDate}
+            min={new Date().toLocaleDateString('en-CA')}
+            onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setSelectedTime('');
+                setSelectedSlot(null);
+            }}
+          />
         </div>
       </div>
 
       {/* Step 2: Choose Time Period */}
       <div className="section">
-        <h3>⏰ Select Time</h3>
-        <div className="time-periods">
-          {Object.keys(timeSlots).map((period) => (
-            <div key={period} className="period-section">
-              <h4>{period.charAt(0).toUpperCase() + period.slice(1)}</h4>
-              <div className="time-grid">
-                {timeSlots[period].map((time) => (
-                  <button
-                    key={time}
-                    className={`time-btn ${selectedTime === time ? 'selected' : ''}`}
-                    onClick={() => handleSlotSelect(time)}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
+        <h3>⏰ Select Period {loading && '(Loading...)'}</h3>
+        {availableSlots.length === 0 && !loading ? (
+             <p className="no-slots">No slots available for this date.</p>
+        ) : (
+            <div className="period-selection-grid">
+               {['Morning', 'Afternoon', 'Evening'].map(period => {
+                   // Find if slot exists for this period
+                   const slot = availableSlots.find(s => s.time === period);
+                   const isBooked = slot && slot.isBooked;
+                   const exists = !!slot;
+
+                   return (
+                       <button
+                           key={period}
+                           className={`period-card ${selectedTime === period ? 'selected' : ''} ${!exists || isBooked ? 'disabled' : ''}`}
+                           disabled={!exists || isBooked}
+                           onClick={() => exists && !isBooked && handleSlotSelect(period)}
+                       >
+                           <div className="period-icon">
+                               {period === 'Morning' && '🌅'}
+                               {period === 'Afternoon' && '☀️'}
+                               {period === 'Evening' && '🌙'}
+                           </div>
+                           <div className="period-name">{period}</div>
+                           <div className="period-status">
+                               {!exists ? 'Unavailable' : isBooked ? 'Booked' : 'Available'}
+                           </div>
+                       </button>
+                   );
+               })}
             </div>
-          ))}
-        </div>
+        )}
       </div>
 
       {/* Step 3: Choose Consultation Type */}
@@ -153,7 +192,7 @@ const SlotSelection = ({ selectedDoctor }) => {
           <div className="appointment-details">
             <div className="detail">
               <span>Date:</span>
-              <strong>{selectedSlot.date}</strong>
+              <strong>{selectedSlot.displayDate}</strong>
             </div>
             <div className="detail">
               <span>Time:</span>
@@ -167,7 +206,7 @@ const SlotSelection = ({ selectedDoctor }) => {
             </div>
             <div className="detail">
               <span>Doctor:</span>
-              <strong>{doctorInfo[selectedDoctor]?.name}</strong>
+              <strong>{doctorInfo?.name}</strong>
             </div>
           </div>
         </div>

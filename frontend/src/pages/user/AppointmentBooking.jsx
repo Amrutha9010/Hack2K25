@@ -6,26 +6,22 @@ import CitySelect from './appointment-steps/CitySelect';
 import SpecialistDoctors from './appointment-steps/SpecialistDoctors';
 import SlotSelection from './appointment-steps/SlotSelection';
 
-const AppointmentBooking = () => {
+const AppointmentBooking = ({ onSuccess }) => {
   const [step, setStep] = useState(1);
   const [selectedProblem, setSelectedProblem] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedCity, setSelectedCity] = useState('bhimavaram'); // Default to Bhimavaram
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [doctorInfo, setDoctorInfo] = useState({});
 
   const handleProblemSelect = (problem) => {
     setSelectedProblem(problem);
-    setStep(2);
+    setStep(2); // Skip Step 2 (CitySelect) -> Go directly to Doctor Select which is now "Step 2" logically but let's keep component numbering or adjust
   };
 
-  const handleCitySelect = (city) => {
-    setSelectedCity(city);
-    setStep(3);
-  };
-
-    const handleDoctorSelect = (doctorId) => {
-    setSelectedDoctor(doctorId);
-    setStep(4);  
+  const handleDoctorSelect = (data) => {
+    setSelectedDoctor(data.doctorId);
+    setDoctorInfo(data.doctorInfo);
+    setStep(3);  
   };
 
    const renderStep = () => {
@@ -33,8 +29,6 @@ const AppointmentBooking = () => {
       case 1:
         return <ProblemSelect onNext={handleProblemSelect} />;
       case 2:
-        return <CitySelect onNext={handleCitySelect} selectedProblem={selectedProblem} />;
-      case 3:
         return (
           <SpecialistDoctors 
             onNext={handleDoctorSelect}
@@ -42,20 +36,18 @@ const AppointmentBooking = () => {
             selectedCity={selectedCity}
           />
         );
-      case 4:
-        return <SlotSelection selectedDoctor={selectedDoctor} />;
+      case 3:
+        return <SlotSelection selectedDoctor={selectedDoctor} doctorInfo={doctorInfo} onSuccess={onSuccess} />;
       default:
         return <ProblemSelect onNext={handleProblemSelect} />;
     }
   };
 
-
   const getStepTitle = () => {
     switch (step) {
       case 1: return 'Select Problem';
-      case 2: return 'Choose Location';
-      case 3: return 'Find Specialist';
-      case 4: return 'Pick Time Slot';
+      case 2: return 'Find Specialist';
+      case 3: return 'Pick Time Slot';
       default: return 'Book Appointment';
     }
   };
@@ -63,18 +55,17 @@ const AppointmentBooking = () => {
     return (
     <div className="appointment-booking">
       <div className="booking-header">
-        <h1>Book Appointment</h1>
+        <h1>Book Appointment in Bhimavaram</h1>
         <div className="progress-bar">
-          {[1, 2, 3, 4].map((s) => (  // Only 4 steps now!
+          {[1, 2, 3].map((s) => (
             <div key={s} className={`step ${s === step ? 'active' : s < step ? 'completed' : ''}`}>
               <div className="step-circle">
                 {s < step ? '✓' : s}
               </div>
               <div className="step-label">
                 {s === 1 && 'Problem'}
-                {s === 2 && 'Location'}
-                {s === 3 && 'Doctor'}
-                {s === 4 && 'Time'}  {/* No 'Mode' step */}
+                {s === 2 && 'Doctor'}
+                {s === 3 && 'Time'}
               </div>
             </div>
           ))}

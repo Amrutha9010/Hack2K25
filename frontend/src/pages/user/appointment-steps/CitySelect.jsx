@@ -6,6 +6,7 @@ const CitySelect = ({ onNext, selectedProblem }) => {
   const [selectedCity, setSelectedCity] = useState('');
   
   const cities = [
+    { id: 'bhimavaram', name: 'Bhimavaram', emoji: '🌾' },
     { id: 'hyderabad', name: 'Hyderabad', emoji: '🏙️' },
     { id: 'bangalore', name: 'Bangalore', emoji: '🌆' },
     { id: 'mumbai', name: 'Mumbai', emoji: '🌃' },

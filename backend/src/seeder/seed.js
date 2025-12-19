@@ -6,14 +6,14 @@ import Doctor from "../models/Doctor.model.js";
 import Slot from "../models/Slot.model.js";
 
 dotenv.config();
-console.log("SEEDING INTO 👉", process.env.MONGO_URI);
+console.log("SEEDING INTO 👉", process.env.MONGODB_URI);
 
 /* ===============================
    CONNECT DB
 ================================ */
 const connectDB = async () => {
-  console.log("SEEDER DB URI 👉", process.env.MONGO_URI); // 🔥 ADD THIS
-  await mongoose.connect(process.env.MONGO_URI);
+  console.log("SEEDER DB URI 👉", process.env.MONGODB_URI); // 🔥 ADD THIS
+  await mongoose.connect(process.env.MONGODB_URI);
   console.log("✅ MongoDB connected for seeding");
 };
 
@@ -110,31 +110,30 @@ const seedSlots = async (doctors) => {
   await Slot.deleteMany();
 
   const slots = [];
+  const start = new Date(); // Start from today
+  
+  // Generate for next 7 days
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(start);
+    date.setDate(start.getDate() + i);
+    const dateString = date.toLocaleDateString('en-CA'); // YYYY-MM-DD format local time
 
-  doctors.forEach((doctor) => {
-    [
-      "9:00 AM",
-      "10:30 AM",
-      "1:00 PM",
-      "4:00 PM",
-      "6:30 PM"
-    ].forEach((time) => {
-      slots.push({
-        doctorId: doctor._id,
-        date: "2025-12-20",
-        time,
-        period: time.includes("AM")
-          ? "morning"
-          : time.includes("1")
-          ? "afternoon"
-          : "evening",
-        isBooked: false
+    doctors.forEach((doctor) => {
+      // 3 General Periods
+      ["Morning", "Afternoon", "Evening"].forEach((period) => {
+        slots.push({
+          doctorId: doctor._id,
+          date: dateString,
+          time: period,       // e.g., "Morning"
+          period: period.toLowerCase(), // "morning"
+          isBooked: false
+        });
       });
     });
-  });
+  }
 
   await Slot.insertMany(slots);
-  console.log("⏰ Slots seeded");
+  console.log("⏰ Generic Period Slots seeded for 7 days");
 };
 
 /* ===============================
