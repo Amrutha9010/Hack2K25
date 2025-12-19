@@ -27,6 +27,9 @@ app.use("/api/appointments", appointmentRoutes);
 import remedyRoutes from "./routes/remedyRoutes.js";
 app.use("/api", remedyRoutes);
 
+import sosRoutes from "./routes/sosRoutes.mjs";
+app.use("/api/sos", sosRoutes);
+
 // ❗ GLOBAL ERROR HANDLER (MUST)
 app.use((err, req, res, next) => {
   console.error("🔥 Error:", err);

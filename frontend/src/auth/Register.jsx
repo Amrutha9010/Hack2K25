@@ -120,7 +120,14 @@ function Register({ onGoToLogin, onRegisterSuccess }) {
         throw new Error(data.message || "Registration failed");
       }
 
-      onRegisterSuccess && onRegisterSuccess(data.data.user.role);
+      const user = data.data.user;
+      const token = data.token;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userProfile", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
+
+      onRegisterSuccess && onRegisterSuccess(user.role);
     } catch (err) {
       alert(err.message || "Registration failed. Please try again.");
     } finally {

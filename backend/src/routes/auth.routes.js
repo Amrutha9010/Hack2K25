@@ -7,6 +7,7 @@ import {
   sendOtp,
   verifyOtp,
   resetPassword,
+  updateProfile,
   protect,
 } from "../controllers/auth.Controller.js"; // ✅ keep same casing
 
@@ -26,5 +27,7 @@ router.get("/me", protect, (req, res) => {
     user: req.user,
   });
 });
+
+router.put("/update-profile", protect, updateProfile);
 
 export default router;

@@ -242,6 +242,60 @@ export const resetPassword = async (req, res, next) => {
   }
 };
 
+/* ================= UPDATE PROFILE ================= */
+export const updateProfile = async (req, res, next) => {
+  try {
+    const {
+      // patient
+      fullName,
+      age,
+      gender,
+
+      // hospital
+      hospitalName,
+      city,
+      pincode,
+      address,
+      specializations,
+
+      // common
+      contact,
+    } = req.body;
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    // Role-based updates
+    if (user.role === "patient") {
+      if (fullName) user.fullName = fullName;
+      if (age) user.age = age;
+      if (gender) user.gender = gender;
+    } else if (user.role === "hospital") {
+      if (hospitalName) user.hospitalName = hospitalName;
+      if (city) user.city = city;
+      if (pincode) user.pincode = pincode;
+      if (address) user.address = address;
+      if (specializations) user.specializations = specializations;
+    }
+
+    // Common updates
+    if (contact) user.contact = contact;
+
+    await user.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      status: "success",
+      message: "Profile updated successfully",
+      data: { user },
+    });
+  } catch (err) {
+    next(new AppError("Profile update failed", 500));
+  }
+};
+
 /* ================= PROTECT ================= */
 export const protect = asyncHandler(async (req, res, next) => {
   let token;

@@ -38,6 +38,22 @@ export const createSOS = async (req, res) => {
       details.email = err?.message || "email_failed";
     }
 
+    // Send SMS
+    try {
+      if (emergencyPhone) {
+        await sendSMS({
+          message: `SOS! Emergency at https://www.google.com/maps?q=${latitude},${longitude}`,
+          phone: emergencyPhone
+        });
+        details.sms = "ok";
+      } else {
+        details.sms = "skipped_no_phone";
+      }
+    } catch (err) {
+      console.error("❌ SMS send failed", err);
+      details.sms = err?.message || "sms_failed";
+    }
+
     const success = details.email === "ok";
 
     if (!success) {
