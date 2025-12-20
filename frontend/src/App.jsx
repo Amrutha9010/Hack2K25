@@ -14,6 +14,9 @@ import About from "./components/About";
 // Pages
 import Home from "./pages/UserHomePage";
 
+// Reports
+import ReportSummarization from "./pages/user/ReportSummarization";
+
 // Patient
 import AppointmentBooking from "./pages/user/AppointmentBooking";
 import BookingConfirmation from "./pages/user/BookingConfirmation";
@@ -73,6 +76,9 @@ function App() {
         break;
       case "/remedies":
         setCurrentPage("remedies");
+        break;
+      case "/reports":
+        setCurrentPage("reports");
         break;
       case "/doctor/dashboard":
         setCurrentPage("dashboard");
@@ -203,6 +209,8 @@ function App() {
               onBookAppointment={() => go("booking", "/booking")}
             />
           )}
+
+          {currentPage === "reports" && <ReportSummarization />}
 
           {/* {currentPage === "video-consultation" && (
             <VideoConsultation

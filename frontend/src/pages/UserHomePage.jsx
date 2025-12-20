@@ -49,6 +49,8 @@ function UserHomePage() {
           src={fiveImage}
           alt="Reports"
           title="Medical Reports"
+          onClick={() => navigate("/reports")}
+          style={{ cursor: "pointer" }}
         />
 
         <img

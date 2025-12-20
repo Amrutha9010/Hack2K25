@@ -30,6 +30,9 @@ app.use("/api", remedyRoutes);
 import sosRoutes from "./routes/sosRoutes.mjs";
 app.use("/api/sos", sosRoutes);
 
+import reportRoutes from "./routes/reportRoutes.js";
+app.use("/api/reports", reportRoutes);
+
 // ❗ GLOBAL ERROR HANDLER (MUST)
 app.use((err, req, res, next) => {
   console.error("🔥 Error:", err);
